@@ -1,6 +1,6 @@
 import operator as op
 
-# Precomputed list of Leonardo numbers to save constant computation time
+# Precomputed list of Leonardo numbers up to 2^64 to save constant computation time
 LEONARDO_NUMBERS = [
     1, 1, 3, 5, 9, 15, 25, 41, 67, 109, 177, 287, 465, 753, 1219,
     1973, 3193, 5167, 8361, 13529, 21891, 35421, 57313, 92735,
@@ -361,13 +361,14 @@ def smoothsort(arr, **kwargs):
         print(f'Array only contains less than 1 element - no need to sort: {arr[:10]}')
         return arr
 
-    d_types = [type(item) for item in arr]
-    if d_types.count(d_types[0]) != arr_len:
-        print(
-            f'Input array contains heterogeneous data types \
-            - terminating sorting operation: {arr[:10]}'
-        )
-        raise TypeError('ARRAY_CONTAINS_HETEROGENEOUS_DATA_TYPE')
+    d_type = type(arr[0])
+    for item in arr:
+        if type(item) != d_type:
+            print(
+                f'Input array contains heterogeneous data types \
+                - terminating sorting operation: {arr[:10]}'
+            )
+            raise TypeError('ARRAY_CONTAINS_HETEROGENEOUS_DATA_TYPE')
 
     print(f'Smooth-sorting array: {arr[:10]}...')
     heap_orders = _leonardo_heapify(arr, arr_len, **kwargs)
