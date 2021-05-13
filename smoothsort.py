@@ -1,16 +1,59 @@
-# This is a sample Python script.
+LEONARDO_NUMBERS = [
+    1, 1, 3, 5, 9, 15, 25, 41, 67, 109, 177, 287, 465, 753, 1219,
+    1973, 3193, 5167, 8361, 13529, 21891, 35421, 57313, 92735,
+    150049, 242785, 392835, 635621, 1028457, 1664079, 2692537,
+    4356617, 7049155, 11405773, 18454929, 29860703, 48315633,
+    78176337, 126491971, 204668309, 331160281, 535828591, 866988873,
+    1402817465, 2269806339, 3672623805, 5942430145, 9615053951,
+    15557484097, 25172538049, 40730022147, 65902560197, 106632582345,
+    172535142543, 279167724889, 451702867433, 730870592323,
+    1182573459757, 1913444052081, 3096017511839, 5009461563921,
+    8105479075761, 13114940639683, 21220419715445, 34335360355129,
+    55555780070575, 89891140425705, 145446920496281, 235338060921987,
+    380784981418269, 616123042340257, 996908023758527, 1613031066098785,
+    2609939089857313, 4222970155956099, 6832909245813413,
+    11055879401769513, 17888788647582927, 28944668049352441,
+    46833456696935369, 75778124746287811, 122611581443223181,
+    198389706189510993, 321001287632734175, 519390993822245169,
+    840392281454979345, 1359783275277224515, 2200175556732203861,
+    3559958832009428377, 5760134388741632239, 9320093220751060617,
+    15080227609492692857
+]
 
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+
+def _dequeue_max(arr):
+    pass
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
+def _enqueue_node(sizes):
+    pass
 
 
-# Press the green button in the gutter to run the script.
+def _trinkle(arr, sizes, node_index, size_index):
+    pass
+
+
+def _create_leonardo_heaps(arr):
+    sizes = []
+    arr_len = len(arr)
+    for node_index in range(arr_len):
+        _enqueue_node(sizes)
+        size_index = len(sizes) - 1
+        root_index, size_index = _trinkle(arr, sizes, node_index, size_index)
+
+
+
+def smoothsort(arr):
+    print(f"Smooth-sorting arr {arr}")
+    _create_leonardo_heaps(arr)
+    _dequeue_max(arr)
+
+
+def _test_smoothsort():
+    arr = [4, 3, 5, 1, 2]
+    smoothsort(arr)
+
+
 if __name__ == '__main__':
-    print_hi('PyCharm')
+    _test_smoothsort()
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
