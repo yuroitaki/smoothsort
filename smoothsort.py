@@ -21,39 +21,141 @@ LEONARDO_NUMBERS = [
 ]
 
 
-def _dequeue_max(arr):
+def _get_leonardo_number(heap_order):
+    try:
+        leonardo_number = LEONARDO_NUMBERS[heap_order]
+    except IndexError:
+        raise ValueError('HEAP_ORDER_BIGGER_THAN_MAX_LIMIT')
+    else:
+        return leonardo_number
+
+
+def _get_right_child_index(node_index):
+    right_child_index = node_index - 1
+    if right_child_index < 0:
+        raise ValueError('RIGHT_CHILD_DOES_NOT_EXIST')
+    return right_child_index
+
+
+def _get_left_child_index(node_index, heap_order):
+    try:
+        right_child_index = _get_right_child_index(node_index)
+    except ValueError:
+        raise ValueError('LEFT_CHILD_DOES_NOT_EXIST')
+    else:
+        right_child_heap_size = _get_leonardo_number(
+            _get_right_child_heap_order(heap_order)
+        )
+        return right_child_index - right_child_heap_size
+
+
+def _get_right_child_heap_order(heap_order):
+    right_child_heap_order = heap_order - 2
+    if right_child_heap_order < 0:
+        raise ValueError('RIGHT_CHILD_DOES_NOT_EXIST')
+    return right_child_heap_order
+
+
+def _get_left_child_heap_order(heap_order):
+    left_child_heap_order = heap_order - 1
+    if left_child_heap_order < 0 or heap_order == 1:
+        raise ValueError('LEFT_CHILD_DOES_NOT_EXIST')
+    return left_child_heap_order
+
+
+def _get_left_root_index(root_index, heap_order):
+    root_heap_size = _get_leonardo_number(heap_order)
+    left_root_index = root_index - root_heap_size
+    if left_root_index < 0:
+        raise ValueError('LEFT_ROOT_DOES_NOT_EXIST')
+    return left_root_index
+
+
+def _dequeue_node(arr, arr_len, heap_orders):
+    for node_index in range(arr_len - 1, 0, -1):
+        dequeued_heap_order = heap_orders.pop()
+        if dequeued_heap_order != 1 and dequeued_heap_order != 0:
+            heap_orders.extend([
+                _get_left_child_heap_order(dequeued_heap_order),
+                _get_right_child_heap_order(dequeued_heap_order)
+            ])
+
+            left_child_index = _get_left_child_index(node_index, dequeued_heap_order)
+            left_child_heap_order_index = len(heap_orders) - 2
+            left_root_index, left_heap_order_index = _trinkle(
+                arr,
+                heap_orders,
+                left_child_index,
+                left_child_heap_order_index
+            )
+            _sift(arr, left_root_index, heap_orders[left_heap_order_index])
+
+            right_child_index = _get_right_child_index(node_index)
+            right_child_heap_order_index = len(heap_orders) - 1
+            right_root_index, right_heap_order_index = _trinkle(
+                arr,
+                heap_orders,
+                right_child_index,
+                right_child_heap_order_index
+            )
+            _sift(arr, right_root_index, heap_orders[right_heap_order_index])
+
+
+def _enqueue_node(heap_orders):
     pass
 
 
-def _enqueue_node(sizes):
+def _trinkle(arr, heap_orders, node_index, heap_order_index):
+    return 0, 1
+
+
+def _sift(arr, root_index, heap_order):
     pass
 
 
-def _trinkle(arr, sizes, node_index, size_index):
-    pass
-
-
-def _create_leonardo_heaps(arr):
-    sizes = []
-    arr_len = len(arr)
+def _leonardo_heapify(arr, arr_len):
+    heap_orders = []
     for node_index in range(arr_len):
-        _enqueue_node(sizes)
-        size_index = len(sizes) - 1
-        root_index, size_index = _trinkle(arr, sizes, node_index, size_index)
-
+        _enqueue_node(heap_orders)
+        heap_order_index = len(heap_orders) - 1
+        root_index, heap_order_index = _trinkle(
+            arr,
+            heap_orders,
+            node_index,
+            heap_order_index
+        )
+        _sift(
+            arr,
+            root_index,
+            heap_orders[heap_order_index]
+        )
+    return heap_orders
 
 
 def smoothsort(arr):
-    print(f"Smooth-sorting arr {arr}")
-    _create_leonardo_heaps(arr)
-    _dequeue_max(arr)
+    if type(arr) != list:
+        print(f'Input is not an array - terminating sorting operation: {arr}')
+        raise TypeError('INPUT_IS_NOT_AN_ARRAY')
+    arr_len = len(arr)
+    if arr_len <= 1:
+        print(f'Array only contains less than 1 element - no need to sort: {arr}')
+        return arr
+    print(f'Smooth-sorting array: {arr}')
+    heap_orders = _leonardo_heapify(arr, arr_len)
+    _dequeue_node(arr, arr_len, heap_orders)
+    return arr
 
 
-def _test_smoothsort():
-    arr = [4, 3, 5, 1, 2]
-    smoothsort(arr)
+def test_smoothsort(arr):
+    sorted_arr = smoothsort(arr)
+    benchmark_sorted_arr = sorted(arr)
+    print(f'Original array: {arr}')
+    print(f'Correct sorted array: {benchmark_sorted_arr}')
+    print(f'Smooth-sorted array: {sorted_arr}')
+    assert sorted_arr == benchmark_sorted_arr
 
 
 if __name__ == '__main__':
-    _test_smoothsort()
+    test_arr = [4, 3, 5, 1, 2]
+    test_smoothsort(test_arr)
 
