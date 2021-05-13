@@ -28,7 +28,6 @@ def test_smoothsort_heterogeneous_dtype():
         run_smoothsort(test_arr)
 
 
-
 def test_smoothsort_integer():
     test_arr = [2, 4, 3, 1, -5]
     run_smoothsort(test_arr)
@@ -70,6 +69,11 @@ def test_smoothsort_same_string():
 
 def test_smoothsort_boolean():
     test_arr = [False, True, False, True, False]
+    run_smoothsort(test_arr)
+
+
+def test_smoothsort_tuple():
+    test_arr = [(2, 2), (3, 4), (1, 2), (1, 3), (2, 3, 4)]
     run_smoothsort(test_arr)
 
 

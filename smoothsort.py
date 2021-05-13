@@ -1,5 +1,3 @@
-import random
-
 LEONARDO_NUMBERS = [
     1, 1, 3, 5, 9, 15, 25, 41, 67, 109, 177, 287, 465, 753, 1219,
     1973, 3193, 5167, 8361, 13529, 21891, 35421, 57313, 92735,
@@ -220,5 +218,5 @@ def smoothsort(arr):
 
 # integer, float, boolean, string, dictionary, list, tuple, set
 if __name__ == '__main__':
-    test_arr = [2, 3, 'b', 'a', False]
+    test_arr = [(2, 2), (3, 4), (1, 2), (1, 3), (2, 3, 4)]
     smoothsort(test_arr)
