@@ -214,12 +214,22 @@ def test_smoothsort(arr):
 
 
 if __name__ == '__main__':
-    test_arr = [4, 3, 5, 1, 2]
+    test_arr_0 = [2, 4, 3, 1, 5]
+
+    test_arr_1 = [-2, 4, 3, 1, -5]
 
     test_size = 2000
     test_arr_2 = list(range(test_size))
     random.shuffle(test_arr_2)
 
-    test_arr_3 = ['abb', 'abb', 'bc', 'ghhl', 'ghh1']
+    test_arr_3 = list(range(test_size))
 
-    test_smoothsort(test_arr_3)
+    test_arr_4 = [0 for i in range(test_size)]
+
+    test_arr_5 = ['abb', 'abb', 'bc', 'ghhl', 'ghh1']
+
+    test_arr_6 = ['a', 'a', 'a', 'a', 'a']
+
+    test_arr_7 = [-2.56, 2.344, 3.2, 1, -5]
+
+    test_smoothsort(test_arr_7)
