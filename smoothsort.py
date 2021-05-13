@@ -1,3 +1,5 @@
+import random
+
 LEONARDO_NUMBERS = [
     1, 1, 3, 5, 9, 15, 25, 41, 67, 109, 177, 287, 465, 753, 1219,
     1973, 3193, 5167, 8361, 13529, 21891, 35421, 57313, 92735,
@@ -71,6 +73,89 @@ def _get_left_root_index(root_index, heap_order):
     return left_root_index
 
 
+def _swap_node(arr, left_index, right_index):
+    arr[left_index], arr[right_index] = arr[right_index], arr[left_index]
+
+
+def _enqueue_node(heap_orders):
+    heap_orders_len = len(heap_orders)
+    if heap_orders_len > 1 and (heap_orders[-2] - heap_orders[-1] == 1):
+        heap_orders.pop()
+        heap_orders[-1] += 1
+    elif heap_orders_len >= 1 and heap_orders[-1] == 1:
+        heap_orders.append(0)
+    else:
+        heap_orders.append(1)
+
+
+def _trinkle(arr, heap_orders, root_index, heap_order_index):
+    if heap_order_index == 0:
+        return root_index, heap_order_index
+
+    left_root_index = _get_left_root_index(root_index, heap_orders[heap_order_index])
+
+    if arr[left_root_index] <= arr[root_index]:
+        return root_index, heap_order_index
+
+    if heap_orders[heap_order_index] > 1:
+        left_child_index = _get_left_child_index(
+            root_index,
+            heap_orders[heap_order_index]
+        )
+        right_child_index = _get_right_child_index(root_index)
+
+        if arr[left_root_index] <= arr[left_child_index] or (
+            arr[left_root_index] <= arr[right_child_index]
+        ):
+            return root_index, heap_order_index
+
+    _swap_node(arr, left_root_index, root_index)
+    return _trinkle(arr, heap_orders, left_root_index, heap_order_index - 1)
+
+
+def _sift(arr, root_index, heap_order):
+    if heap_order <= 1:
+        return
+
+    largest_node_index = root_index
+    largest_node_heap_order = heap_order
+    left_child_index = _get_left_child_index(root_index, heap_order)
+    right_child_index = _get_right_child_index(root_index)
+
+    if arr[largest_node_index] < arr[left_child_index]:
+        largest_node_index = left_child_index
+        largest_node_heap_order = _get_left_child_heap_order(heap_order)
+
+    if arr[largest_node_index] < arr[right_child_index]:
+        largest_node_index = right_child_index
+        largest_node_heap_order = _get_right_child_heap_order(heap_order)
+
+    if largest_node_index == root_index:
+        return
+
+    _swap_node(arr, root_index, largest_node_index)
+    _sift(arr, largest_node_index, largest_node_heap_order)
+
+
+def _leonardo_heapify(arr, arr_len):
+    heap_orders = []
+    for node_index in range(arr_len):
+        _enqueue_node(heap_orders)
+        heap_order_index = len(heap_orders) - 1
+        root_index, heap_order_index = _trinkle(
+            arr,
+            heap_orders,
+            node_index,
+            heap_order_index
+        )
+        _sift(
+            arr,
+            root_index,
+            heap_orders[heap_order_index]
+        )
+    return heap_orders
+
+
 def _dequeue_node(arr, arr_len, heap_orders):
     for node_index in range(arr_len - 1, 0, -1):
         dequeued_heap_order = heap_orders.pop()
@@ -101,37 +186,6 @@ def _dequeue_node(arr, arr_len, heap_orders):
             _sift(arr, right_root_index, heap_orders[right_heap_order_index])
 
 
-def _enqueue_node(heap_orders):
-    pass
-
-
-def _trinkle(arr, heap_orders, node_index, heap_order_index):
-    return 0, 1
-
-
-def _sift(arr, root_index, heap_order):
-    pass
-
-
-def _leonardo_heapify(arr, arr_len):
-    heap_orders = []
-    for node_index in range(arr_len):
-        _enqueue_node(heap_orders)
-        heap_order_index = len(heap_orders) - 1
-        root_index, heap_order_index = _trinkle(
-            arr,
-            heap_orders,
-            node_index,
-            heap_order_index
-        )
-        _sift(
-            arr,
-            root_index,
-            heap_orders[heap_order_index]
-        )
-    return heap_orders
-
-
 def smoothsort(arr):
     if type(arr) != list:
         print(f'Input is not an array - terminating sorting operation: {arr}')
@@ -149,13 +203,17 @@ def smoothsort(arr):
 def test_smoothsort(arr):
     sorted_arr = smoothsort(arr)
     benchmark_sorted_arr = sorted(arr)
-    print(f'Original array: {arr}')
-    print(f'Correct sorted array: {benchmark_sorted_arr}')
-    print(f'Smooth-sorted array: {sorted_arr}')
+    # print(f'Original array: {arr}')
+    # print(f'Correct sorted array: {benchmark_sorted_arr}')
+    # print(f'Smooth-sorted array: {sorted_arr}')
     assert sorted_arr == benchmark_sorted_arr
 
 
 if __name__ == '__main__':
     test_arr = [4, 3, 5, 1, 2]
-    test_smoothsort(test_arr)
+    test_size = 200000
+    test_arr_2 = list(range(test_size))
+    random.shuffle(test_arr_2)
+    test_smoothsort(test_arr_2)
+
 
