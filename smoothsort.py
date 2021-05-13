@@ -138,6 +138,7 @@ def _sift(arr, root_index, heap_order):
 
 
 def _leonardo_heapify(arr, arr_len):
+    print(f'Heapifying array into Leonardo heaps')
     heap_orders = []
     for node_index in range(arr_len):
         _enqueue_node(heap_orders)
@@ -157,6 +158,9 @@ def _leonardo_heapify(arr, arr_len):
 
 
 def _dequeue_node(arr, arr_len, heap_orders):
+    print(
+        f'Dequeueing max nodes from Leonardo heaps with these orders: {heap_orders[:10]}'
+    )
     for node_index in range(arr_len - 1, 0, -1):
         dequeued_heap_order = heap_orders.pop()
         if dequeued_heap_order != 1 and dequeued_heap_order != 0:
@@ -194,26 +198,28 @@ def smoothsort(arr):
     if arr_len <= 1:
         print(f'Array only contains less than 1 element - no need to sort: {arr}')
         return arr
-    print(f'Smooth-sorting array: {arr}')
+    print(f'Smooth-sorting array: {arr[:10]}...')
     heap_orders = _leonardo_heapify(arr, arr_len)
     _dequeue_node(arr, arr_len, heap_orders)
+    print(f'Finished smooth-sorting array')
     return arr
 
 
 def test_smoothsort(arr):
     sorted_arr = smoothsort(arr)
     benchmark_sorted_arr = sorted(arr)
-    # print(f'Original array: {arr}')
-    # print(f'Correct sorted array: {benchmark_sorted_arr}')
-    # print(f'Smooth-sorted array: {sorted_arr}')
+    print(f'Correct sorted array: {benchmark_sorted_arr[:10]}...')
+    print(f'Smooth-sorted array: {sorted_arr[:10]}...')
     assert sorted_arr == benchmark_sorted_arr
 
 
 if __name__ == '__main__':
     test_arr = [4, 3, 5, 1, 2]
-    test_size = 200000
+
+    test_size = 2000
     test_arr_2 = list(range(test_size))
     random.shuffle(test_arr_2)
-    test_smoothsort(test_arr_2)
 
+    test_arr_3 = ['abb', 'abb', 'bc', 'ghhl', 'ghh1']
 
+    test_smoothsort(test_arr_3)
