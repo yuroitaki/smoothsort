@@ -1,3 +1,5 @@
+import operator as op
+
 LEONARDO_NUMBERS = [
     1, 1, 3, 5, 9, 15, 25, 41, 67, 109, 177, 287, 465, 753, 1219,
     1973, 3193, 5167, 8361, 13529, 21891, 35421, 57313, 92735,
@@ -75,6 +77,19 @@ def _swap_node(arr, left_index, right_index):
     arr[left_index], arr[right_index] = arr[right_index], arr[left_index]
 
 
+def _compare_node(left_node, right_node, operation, **kwargs):
+    try:
+        return operation(left_node, right_node)
+    except TypeError:
+        compare_key = kwargs.get('compare_key', None)
+        if compare_key is None or not callable(compare_key):
+            raise TypeError('NO_COMPARE_KEY_FOR_UNSUPPORTED_DATA_TYPE')
+        return operation(
+            compare_key(left_node),
+            compare_key(right_node)
+        )
+
+
 def _enqueue_node(heap_orders):
     heap_orders_len = len(heap_orders)
     if heap_orders_len > 1 and (heap_orders[-2] - heap_orders[-1] == 1):
@@ -86,13 +101,13 @@ def _enqueue_node(heap_orders):
         heap_orders.append(1)
 
 
-def _trinkle(arr, heap_orders, root_index, heap_order_index):
+def _trinkle(arr, heap_orders, root_index, heap_order_index, **kwargs):
     if heap_order_index == 0:
         return root_index, heap_order_index
 
     left_root_index = _get_left_root_index(root_index, heap_orders[heap_order_index])
 
-    if arr[left_root_index] <= arr[root_index]:
+    if _compare_node(arr[left_root_index], arr[root_index], op.le, **kwargs):
         return root_index, heap_order_index
 
     if heap_orders[heap_order_index] > 1:
@@ -102,16 +117,24 @@ def _trinkle(arr, heap_orders, root_index, heap_order_index):
         )
         right_child_index = _get_right_child_index(root_index)
 
-        if arr[left_root_index] <= arr[left_child_index] or (
-            arr[left_root_index] <= arr[right_child_index]
+        if _compare_node(
+            arr[left_root_index],
+            arr[left_child_index],
+            op.le,
+            **kwargs
+        ) or _compare_node(
+            arr[left_root_index],
+            arr[right_child_index],
+            op.le,
+            **kwargs
         ):
             return root_index, heap_order_index
 
     _swap_node(arr, left_root_index, root_index)
-    return _trinkle(arr, heap_orders, left_root_index, heap_order_index - 1)
+    return _trinkle(arr, heap_orders, left_root_index, heap_order_index - 1, **kwargs)
 
 
-def _sift(arr, root_index, heap_order):
+def _sift(arr, root_index, heap_order, **kwargs):
     if heap_order <= 1:
         return
 
@@ -120,11 +143,11 @@ def _sift(arr, root_index, heap_order):
     left_child_index = _get_left_child_index(root_index, heap_order)
     right_child_index = _get_right_child_index(root_index)
 
-    if arr[largest_node_index] < arr[left_child_index]:
+    if _compare_node(arr[largest_node_index], arr[left_child_index], op.lt, **kwargs):
         largest_node_index = left_child_index
         largest_node_heap_order = _get_left_child_heap_order(heap_order)
 
-    if arr[largest_node_index] < arr[right_child_index]:
+    if _compare_node(arr[largest_node_index], arr[right_child_index], op.lt, **kwargs):
         largest_node_index = right_child_index
         largest_node_heap_order = _get_right_child_heap_order(heap_order)
 
@@ -132,10 +155,10 @@ def _sift(arr, root_index, heap_order):
         return
 
     _swap_node(arr, root_index, largest_node_index)
-    _sift(arr, largest_node_index, largest_node_heap_order)
+    _sift(arr, largest_node_index, largest_node_heap_order, **kwargs)
 
 
-def _leonardo_heapify(arr, arr_len):
+def _leonardo_heapify(arr, arr_len, **kwargs):
     print(f'Heapifying array into Leonardo heaps')
     heap_orders = []
     for node_index in range(arr_len):
@@ -146,18 +169,20 @@ def _leonardo_heapify(arr, arr_len):
             arr,
             heap_orders,
             node_index,
-            heap_order_index
+            heap_order_index,
+            **kwargs
         )
 
         _sift(
             arr,
             root_index,
-            heap_orders[heap_order_index]
+            heap_orders[heap_order_index],
+            **kwargs
         )
     return heap_orders
 
 
-def _dequeue_node(arr, arr_len, heap_orders):
+def _dequeue_node(arr, arr_len, heap_orders, **kwargs):
     print(
         f'Dequeueing max nodes from Leonardo heaps with these orders: {heap_orders[:10]}'
     )
@@ -175,9 +200,10 @@ def _dequeue_node(arr, arr_len, heap_orders):
                 arr,
                 heap_orders,
                 left_child_index,
-                left_child_heap_order_index
+                left_child_heap_order_index,
+                **kwargs
             )
-            _sift(arr, left_root_index, heap_orders[left_heap_order_index])
+            _sift(arr, left_root_index, heap_orders[left_heap_order_index], **kwargs)
 
             right_child_index = _get_right_child_index(node_index)
             right_child_heap_order_index = len(heap_orders) - 1
@@ -185,14 +211,15 @@ def _dequeue_node(arr, arr_len, heap_orders):
                 arr,
                 heap_orders,
                 right_child_index,
-                right_child_heap_order_index
+                right_child_heap_order_index,
+                **kwargs
             )
-            _sift(arr, right_root_index, heap_orders[right_heap_order_index])
+            _sift(arr, right_root_index, heap_orders[right_heap_order_index], **kwargs)
 
 
-def smoothsort(arr):
-    if type(arr) != list:
-        print(f'Input is not an array - terminating sorting operation: {arr}')
+def smoothsort(arr, **kwargs):
+    if not isinstance(arr, list):
+        print(f'Input is not an array(list) - terminating sorting operation: {arr}')
         raise TypeError('INPUT_IS_NOT_AN_ARRAY')
 
     arr_len = len(arr)
@@ -209,14 +236,18 @@ def smoothsort(arr):
         raise TypeError('ARRAY_CONTAINS_HETEROGENEOUS_DATA_TYPE')
 
     print(f'Smooth-sorting array: {arr[:10]}...')
-    heap_orders = _leonardo_heapify(arr, arr_len)
-    _dequeue_node(arr, arr_len, heap_orders)
+    heap_orders = _leonardo_heapify(arr, arr_len, **kwargs)
+    _dequeue_node(arr, arr_len, heap_orders, **kwargs)
     print(f'Finished smooth-sorting array {arr[:10]}...')
 
     return arr
 
 
-# integer, float, boolean, string, dictionary, list, tuple, set
 if __name__ == '__main__':
-    test_arr = [(2, 2), (3, 4), (1, 2), (1, 3), (2, 3, 4)]
-    smoothsort(test_arr)
+    test_arr = [{'a': 1}, {'a': 4}, {'c': 2}, {'b': 4}, {'d': {'a': 2}}]
+    compare_key = lambda x: list(x)
+    smoothsort(
+        test_arr,
+        compare_key=compare_key
+    )
+    print(f'Correct sorted arr: {sorted(test_arr, key=compare_key)}')

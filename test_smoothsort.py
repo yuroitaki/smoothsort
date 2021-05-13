@@ -1,11 +1,12 @@
 import pytest
 import random
+import array
 from smoothsort import smoothsort
 
 
-def run_smoothsort(arr):
-    sorted_arr = smoothsort(arr)
-    benchmark_sorted_arr = sorted(arr)
+def run_smoothsort(arr, key=None):
+    sorted_arr = smoothsort(arr, compare_key=key)
+    benchmark_sorted_arr = sorted(arr, key=key)
     print(f'Correct sorted array: {benchmark_sorted_arr[:10]}...')
     print(f'Smooth-sorted array: {sorted_arr[:10]}...')
     assert sorted_arr == benchmark_sorted_arr
@@ -75,6 +76,32 @@ def test_smoothsort_boolean():
 def test_smoothsort_tuple():
     test_arr = [(2, 2), (3, 4), (1, 2), (1, 3), (2, 3, 4)]
     run_smoothsort(test_arr)
+
+
+def test_smoothsort_lists():
+    test_arr = [[1, 3, 5], [1, 3, 6], [3], [5, 2], [5, 1]]
+    run_smoothsort(test_arr)
+
+
+def test_smoothsort_sets():
+    test_arr = [{1, 3, 5}, {1, 3, 6}, {3}, {5, 2}, {5, 1}]
+    run_smoothsort(test_arr)
+
+
+def test_smoothsort_arrays():
+    test_arr_1 = array.array('I', [1, 3, 4])
+    test_arr_2 = array.array('I', [1, 3, 5])
+    test_arr = [test_arr_1, test_arr_2]
+    run_smoothsort(test_arr)
+
+
+def test_smoothsort_dicts():
+    test_arr = [{'a': 1}, {'a': 4}, {'c': 2}, {'b': 4}, {'d': {'a': 2}}]
+    compare_key = lambda x: list(x)
+    run_smoothsort(
+        test_arr,
+        key=compare_key
+    )
 
 
 if __name__ == '__main__':
