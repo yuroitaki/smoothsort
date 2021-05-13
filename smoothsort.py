@@ -143,12 +143,14 @@ def _leonardo_heapify(arr, arr_len):
     for node_index in range(arr_len):
         _enqueue_node(heap_orders)
         heap_order_index = len(heap_orders) - 1
+
         root_index, heap_order_index = _trinkle(
             arr,
             heap_orders,
             node_index,
             heap_order_index
         )
+
         _sift(
             arr,
             root_index,
@@ -194,42 +196,15 @@ def smoothsort(arr):
     if type(arr) != list:
         print(f'Input is not an array - terminating sorting operation: {arr}')
         raise TypeError('INPUT_IS_NOT_AN_ARRAY')
+
     arr_len = len(arr)
     if arr_len <= 1:
         print(f'Array only contains less than 1 element - no need to sort: {arr}')
         return arr
+
     print(f'Smooth-sorting array: {arr[:10]}...')
     heap_orders = _leonardo_heapify(arr, arr_len)
     _dequeue_node(arr, arr_len, heap_orders)
     print(f'Finished smooth-sorting array')
+
     return arr
-
-
-def test_smoothsort(arr):
-    sorted_arr = smoothsort(arr)
-    benchmark_sorted_arr = sorted(arr)
-    print(f'Correct sorted array: {benchmark_sorted_arr[:10]}...')
-    print(f'Smooth-sorted array: {sorted_arr[:10]}...')
-    assert sorted_arr == benchmark_sorted_arr
-
-
-if __name__ == '__main__':
-    test_arr_0 = [2, 4, 3, 1, 5]
-
-    test_arr_1 = [-2, 4, 3, 1, -5]
-
-    test_size = 2000
-    test_arr_2 = list(range(test_size))
-    random.shuffle(test_arr_2)
-
-    test_arr_3 = list(range(test_size))
-
-    test_arr_4 = [0 for i in range(test_size)]
-
-    test_arr_5 = ['abb', 'abb', 'bc', 'ghhl', 'ghh1']
-
-    test_arr_6 = ['a', 'a', 'a', 'a', 'a']
-
-    test_arr_7 = [-2.56, 2.344, 3.2, 1, -5]
-
-    test_smoothsort(test_arr_7)
