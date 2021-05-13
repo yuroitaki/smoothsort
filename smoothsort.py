@@ -202,9 +202,23 @@ def smoothsort(arr):
         print(f'Array only contains less than 1 element - no need to sort: {arr}')
         return arr
 
+    d_types = [type(item) for item in arr]
+    if d_types.count(d_types[0]) != arr_len:
+        print(
+            f'Input array contains heterogeneous data types \
+            - terminating sorting operation: {arr}'
+        )
+        raise TypeError('ARRAY_CONTAINS_HETEROGENEOUS_DATA_TYPE')
+
     print(f'Smooth-sorting array: {arr[:10]}...')
     heap_orders = _leonardo_heapify(arr, arr_len)
     _dequeue_node(arr, arr_len, heap_orders)
-    print(f'Finished smooth-sorting array')
+    print(f'Finished smooth-sorting array {arr[:10]}...')
 
     return arr
+
+
+# integer, float, boolean, string, dictionary, list, tuple, set
+if __name__ == '__main__':
+    test_arr = [2, 3, 'b', 'a', False]
+    smoothsort(test_arr)

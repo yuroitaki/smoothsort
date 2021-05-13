@@ -1,3 +1,4 @@
+import pytest
 import random
 from smoothsort import smoothsort
 
@@ -10,13 +11,31 @@ def run_smoothsort(arr):
     assert sorted_arr == benchmark_sorted_arr
 
 
-def test_smoothsort_integer():
-    test_arr = [2, 4, 3, 1, 5]
+def test_smoothsort_redundant_arr():
+    test_arr = []
     run_smoothsort(test_arr)
 
 
-def test_smoothsort_decimal():
-    test_arr = [-2.56, 2.344, 3.2, 1, -5]
+def test_smoothsort_invalid_input():
+    test_arr = 'abcdge'
+    with pytest.raises(TypeError):
+        run_smoothsort(test_arr)
+
+
+def test_smoothsort_heterogeneous_dtype():
+    test_arr = [2, 3.1, 'b', 'a', False]
+    with pytest.raises(TypeError):
+        run_smoothsort(test_arr)
+
+
+
+def test_smoothsort_integer():
+    test_arr = [2, 4, 3, 1, -5]
+    run_smoothsort(test_arr)
+
+
+def test_smoothsort_float():
+    test_arr = [-2.56, 2.344, 3.2, 1.0, -5.1]
     run_smoothsort(test_arr)
 
 
@@ -46,6 +65,11 @@ def test_smoothsort_string():
 
 def test_smoothsort_same_string():
     test_arr = ['a', 'a', 'a', 'a', 'a']
+    run_smoothsort(test_arr)
+
+
+def test_smoothsort_boolean():
+    test_arr = [False, True, False, True, False]
     run_smoothsort(test_arr)
 
 
