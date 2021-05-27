@@ -1,5 +1,5 @@
 # Scope
-A Python implementation of Dijkstra's smoothsort algorithm.
+A Python implementation of Dijkstra's smoothsort algorithm
 
 # Details
 - Implemented in-place sorting with an auxiliary array to store the location of each Leonardo heap

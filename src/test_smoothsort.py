@@ -105,4 +105,4 @@ def test_smoothsort_dicts():
 
 
 if __name__ == '__main__':
-    test_smoothsort_dicts()
+    test_smoothsort_arrays()
